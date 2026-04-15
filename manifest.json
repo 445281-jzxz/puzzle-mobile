@@ -1,0 +1,14 @@
+{
+  "name": "猜字解底",
+  "short_name": "猜字",
+  "description": "根据提示词，猜出隐藏的谜底汉字",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1976d2",
+  "background_color": "#1976d2",
+  "start_url": "./",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
