@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1976d2" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="猜字解底" />
+    <link rel="manifest" href="manifest.json" />
+    <title>猜字解底</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+
+    <!-- 开始界面 -->
+    <div id="start-screen" class="screen start-screen">
+      <div class="start-card">
+        <h1 class="start-title">猜字解底</h1>
+        <p class="start-desc">根据提示词，猜出隐藏的谜底汉字</p>
+        <button id="btn-start" class="btn-start">开始游戏</button>
+      </div>
+    </div>
+
+    <!-- 选人界面 -->
+    <div id="player-screen" class="screen player-screen hidden">
+      <div class="player-card">
+        <h2 class="player-title">选择玩家人数</h2>
+        <p class="player-desc">每位玩家对应一个颜色</p>
+        <div id="player-grid" class="player-grid"></div>
+        <button id="btn-back" class="btn-back">← 返回</button>
+      </div>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="game-screen" class="screen game-screen hidden">
+
+      <!-- 顶部标题栏 -->
+      <header class="game-header">
+        <span class="game-title">猜字解底</span>
+        <div id="answer" class="answer" aria-hidden="true"></div>
+      </header>
+
+      <!-- 可滚动内容区 -->
+      <main class="game-body">
+        <div id="clues" class="clues"></div>
+
+        <div class="section-label">记分板</div>
+        <div id="scores" class="scores"></div>
+      </main>
+
+      <!-- 底部固定操作栏 -->
+      <footer class="game-footer">
+        <button id="btn-generate" class="btn-action btn-next">换一题</button>
+        <button id="btn-reveal"   class="btn-action btn-reveal" disabled>揭示谜底</button>
+      </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
