@@ -62,7 +62,6 @@ function startGame(players) {
 // ── 提示区 ───────────────────────────────────────────────
 function createClueButtons(words) {
   const container = document.getElementById('clues');
-  container.style.gridTemplateColumns = `repeat(${getGridCols(words.length)}, 1fr)`;
   container.innerHTML = '';
   words.forEach((w, i) => {
     const btn = document.createElement('button');
@@ -89,7 +88,6 @@ function toggleClue(btn) {
 // ── 计分区 ───────────────────────────────────────────────
 function createScoreCards(count) {
   const container = document.getElementById('scores');
-  container.style.gridTemplateColumns = `repeat(${getGridCols(count)}, 1fr)`;
   container.innerHTML = '';
   for (let i = 0; i < count; i++) {
     const card = document.createElement('div');
