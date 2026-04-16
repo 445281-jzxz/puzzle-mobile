@@ -82,6 +82,15 @@ body {
 }
 .btn-start:active { transform: scale(0.97); }
 
+/* 编号搜索输入样式 */
+.id-search { display: flex; gap: 8px; margin-bottom: 12px; }
+.input-id { flex: 1; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); font-size: 14px; }
+.id-error { color: #ffe7e7; font-size: 13px; margin-top: 6px; }
+
+/* puzzle id */
+.puzzle-id { color: rgba(255,255,255,0.95); font-weight: 700; margin-left: 8px; }
+.puzzle-id.copied { opacity: 0.8; font-size: 13px; }
+
 /* ── 选人界面 ───────────────────────────────────────────────── */
 .player-screen {
   align-items: center;
