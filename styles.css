@@ -88,24 +88,21 @@ body {
 .btn-search { padding: 8px 10px; font-size: 14px; border-radius: 10px; background: #fff; color: #1976d2; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .id-error { color: #ffe7e7; font-size: 13px; margin-top: 6px; }
 
-/* puzzle id */
+/* puzzle id — 独占第二行，完整显示编号 */
 .puzzle-id {
-  color: rgba(255,255,255,0.95);
-  font-weight: 700;
-  margin-left: 8px;
-  /* Allow the id to wrap so long ids are fully visible */
-  white-space: normal;
-  word-break: break-all;
-  overflow: visible;
-  max-width: none;
+  order: 10;
+  width: 100%;
   text-align: center;
-  font-size: clamp(12px, 4vw, 16px);
-  line-height: 1.1;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.88);
+  letter-spacing: 0.5px;
+  padding: 0 4px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.puzzle-id.copied { opacity: 0.8; font-size: 13px; }
-
-/* Make answer not expand to push out the id */
-.game-header .answer { flex: 0 0 auto; margin-left: 8px; }
+.puzzle-id.copied { opacity: 0.7; }
 
 /* ── 选人界面 ───────────────────────────────────────────────── */
 .player-screen {
@@ -191,10 +188,10 @@ body {
   z-index: 10;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  height: var(--header-h);
-  padding: 0 16px;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  min-height: var(--header-h);
+  padding: 0 16px 0;
   padding-top: env(safe-area-inset-top);
   background: #1976d2;
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
