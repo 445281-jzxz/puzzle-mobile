@@ -88,19 +88,23 @@ body {
 .btn-search { padding: 8px 10px; font-size: 14px; border-radius: 10px; background: #fff; color: #1976d2; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .id-error { color: #ffe7e7; font-size: 13px; margin-top: 6px; }
 
-/* puzzle id — 独占第二行，完整显示编号 */
+/* puzzle id — 靠右显示，与返回键同行垂直居中 */
 .puzzle-id {
-  order: 10;
-  width: 100%;
-  text-align: center;
+  order: 1;          /* btn-home/answer 均为 order:0，puzzle-id 排最后 */
+  margin-left: auto; /* 推到右侧 */
+  flex-shrink: 0;
   font-size: 12px;
   font-weight: 600;
   color: rgba(255,255,255,0.88);
   letter-spacing: 0.5px;
-  padding: 0 4px 4px;
   white-space: nowrap;
 }
 .puzzle-id.copied { opacity: 0.7; }
+
+/* 返回键在游戏头部只需窄一点，节省空间给编号 */
+#btn-home { padding-left: 14px; padding-right: 14px; flex-shrink: 0; }
+/* 谜底区不抢占剩余空间，让 margin-left:auto 生效 */
+.game-header .answer { flex: 0 1 auto; }
 
 /* ── 选人界面 ───────────────────────────────────────────────── */
 .player-screen {
@@ -186,10 +190,10 @@ body {
   z-index: 10;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0 12px;
-  min-height: var(--header-h);
-  padding: 0 16px 0;
+  flex-wrap: nowrap;
+  gap: 0 10px;
+  height: var(--header-h);
+  padding: 0 16px;
   padding-top: env(safe-area-inset-top);
   background: #1976d2;
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
