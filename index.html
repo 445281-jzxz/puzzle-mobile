@@ -18,7 +18,12 @@
       <div class="start-card">
         <h1 class="start-title">猜字解底</h1>
         <p class="start-desc">根据提示词，猜出隐藏的谜底汉字</p>
-        <button id="btn-start" class="btn-start">开始游戏</button>
+          <div class="id-search">
+            <input id="input-id" class="input-id" placeholder="通过编号搜索题目（示例：00013...）" />
+            <button id="btn-load-id" class="btn-start">搜索</button>
+            <div id="id-error" class="id-error hidden"></div>
+          </div>
+          <button id="btn-start" class="btn-start">开始游戏</button>
       </div>
     </div>
 
@@ -37,7 +42,9 @@
 
       <!-- 顶部标题栏 -->
       <header class="game-header">
+        <button id="btn-home" class="btn-back">←</button>
         <span class="game-title">猜字解底</span>
+        <span id="puzzle-id" class="puzzle-id" title="点击复制编号"></span>
         <div id="answer" class="answer" aria-hidden="true"></div>
       </header>
 

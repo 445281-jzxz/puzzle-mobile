@@ -74,6 +74,26 @@ function createClueButtons(words) {
   });
 }
 
+function buildPuzzleId(puzzleIndex, playerCount, selectedIndices) {
+  const pos = String(puzzleIndex + 1).padStart(4, '0');
+  const players = String(playerCount);
+  const indices = (selectedIndices || []).map(i => String(i + 1).padStart(3, '0')).join('');
+  return pos + players + indices;
+}
+
+function renderPuzzle(json, id) {
+  current = json;
+  createClueButtons(json.options || []);
+  document.getElementById('btn-reveal').disabled = false;
+  document.getElementById('answer').textContent = '';
+  document.getElementById('answer').setAttribute('aria-hidden', 'true');
+  const idEl = document.getElementById('puzzle-id');
+  if (idEl) {
+    idEl.textContent = id || '';
+    idEl.dataset.id = id || '';
+  }
+}
+
 function toggleClue(btn) {
   const shown = btn.dataset.shown === 'true';
   if (shown) {
@@ -165,26 +185,80 @@ async function loadPuzzles() {
 }
 
 function pickPuzzle(puzzles, count) {
-  // 筛选候选数足够的题目
-  const eligible = puzzles.filter(p => p.options.length >= count);
-  if (eligible.length === 0) return null;
-  // 随机选一道
-  const puzzle = eligible[Math.floor(Math.random() * eligible.length)];
-  // 打乱后取前 count 个
-  const shuffled = [...puzzle.options].sort(() => Math.random() - 0.5);
-  return { answer: puzzle.answer, options: shuffled.slice(0, count) };
+  // 找到所有可用题目的索引
+  const eligibleIdx = puzzles.map((p, idx) => ({ p, idx })).filter(x => (x.p.options || []).length >= count).map(x => x.idx);
+  if (eligibleIdx.length === 0) return null;
+  const pickIdx = eligibleIdx[Math.floor(Math.random() * eligibleIdx.length)];
+  const puzzle = puzzles[pickIdx];
+  const n = puzzle.options.length;
+  // 随机选择若干选项的索引
+  const idxs = Array.from({ length: n }, (_, i) => i).sort(() => Math.random() - 0.5).slice(0, count);
+  const options = idxs.map(i => puzzle.options[i]);
+  return { answer: puzzle.answer, options, puzzleIndex: pickIdx, selectedIndices: idxs };
 }
 
 // ── 题目 / 谜底 ──────────────────────────────────────────
 async function generate() {
   const count = getClueCount(selectedPlayers);
   const puzzles = await loadPuzzles();
-  current = pickPuzzle(puzzles, count);
-  if (!current) return;
-  createClueButtons(current.options);
-  document.getElementById('btn-reveal').disabled = false;
-  document.getElementById('answer').textContent = '';
-  document.getElementById('answer').setAttribute('aria-hidden', 'true');
+  const picked = pickPuzzle(puzzles, count);
+  if (!picked) return;
+  const id = buildPuzzleId(picked.puzzleIndex, selectedPlayers, picked.selectedIndices || []);
+  renderPuzzle(picked, id);
+}
+
+async function loadGameById() {
+  const input = document.getElementById('input-id');
+  const errorEl = document.getElementById('id-error');
+  const id = (input && input.value || '').trim();
+  if (errorEl) { errorEl.classList.add('hidden'); errorEl.textContent = ''; }
+  if (!id) return;
+  // 格式：pos(4)+players(1)+indices(each 3)
+  const pos = parseInt(id.slice(0, 4), 10);
+  const playerCount = parseInt(id.slice(4, 5), 10);
+  if (Number.isNaN(pos) || Number.isNaN(playerCount)) {
+    if (errorEl) { errorEl.textContent = '编号格式无效'; errorEl.classList.remove('hidden'); }
+    return;
+  }
+  const count = getClueCount(playerCount);
+  const rest = id.slice(5);
+  if (rest.length < count * 3) {
+    if (errorEl) { errorEl.textContent = '编号长度与玩家数不匹配'; errorEl.classList.remove('hidden'); }
+    return;
+  }
+  const indices = [];
+  for (let i = 0; i < count; i++) {
+    const seg = rest.slice(i * 3, i * 3 + 3);
+    const idx = parseInt(seg, 10);
+    if (Number.isNaN(idx)) {
+      if (errorEl) { errorEl.textContent = '编号包含非法段'; errorEl.classList.remove('hidden'); }
+      return;
+    }
+    indices.push(idx - 1);
+  }
+
+  const puzzles = await loadPuzzles();
+  const puzzleIndex = pos - 1;
+  if (!puzzles[puzzleIndex]) {
+    if (errorEl) { errorEl.textContent = '未找到对应题目'; errorEl.classList.remove('hidden'); }
+    return;
+  }
+  const puzzle = puzzles[puzzleIndex];
+  // 构造选项
+  const options = (indices || []).map(i => puzzle.options[i]).filter(Boolean);
+  if (options.length !== count) {
+    if (errorEl) { errorEl.textContent = '题目选项索引越界或无效'; errorEl.classList.remove('hidden'); }
+    return;
+  }
+
+  selectedPlayers = playerCount;
+  scores.fill(0);
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('player-screen').classList.add('hidden');
+  document.getElementById('game-screen').classList.remove('hidden');
+  createScoreCards(getClueCount(playerCount));
+  renderPuzzle({ answer: puzzle.answer, options }, id);
+  if (input) input.value = '';
 }
 
 function revealAnswer() {
@@ -198,6 +272,20 @@ function revealAnswer() {
 document.getElementById('btn-generate').addEventListener('click', generate);
 document.getElementById('btn-reveal').addEventListener('click', revealAnswer);
 
+document.getElementById('puzzle-id').addEventListener && document.getElementById('puzzle-id').addEventListener('click', () => {
+  const el = document.getElementById('puzzle-id');
+  const text = el && el.dataset && el.dataset.id;
+  if (!text) return;
+  navigator.clipboard && navigator.clipboard.writeText(text).then(() => {
+    el.textContent = '已复制';
+    el.classList.add('copied');
+    setTimeout(() => {
+      el.textContent = text;
+      el.classList.remove('copied');
+    }, 1500);
+  }).catch(() => {});
+});
+
 document.getElementById('btn-start').addEventListener('click', () => {
   document.getElementById('start-screen').classList.add('hidden');
   document.getElementById('player-screen').classList.remove('hidden');
@@ -207,6 +295,14 @@ document.getElementById('btn-back').addEventListener('click', () => {
   document.getElementById('player-screen').classList.add('hidden');
   document.getElementById('start-screen').classList.remove('hidden');
 });
+
+document.getElementById('btn-home') && document.getElementById('btn-home').addEventListener('click', () => {
+  document.getElementById('game-screen').classList.add('hidden');
+  document.getElementById('start-screen').classList.remove('hidden');
+});
+
+document.getElementById('btn-load-id') && document.getElementById('btn-load-id').addEventListener('click', loadGameById);
+document.getElementById('input-id') && document.getElementById('input-id').addEventListener('keydown', e => { if (e.key === 'Enter') loadGameById(); });
 
 // ── 初始化 ───────────────────────────────────────────────
 buildPlayerButtons();
