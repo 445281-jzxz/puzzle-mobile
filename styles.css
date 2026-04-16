@@ -89,13 +89,23 @@ body {
 .id-error { color: #ffe7e7; font-size: 13px; margin-top: 6px; }
 
 /* puzzle id */
-.puzzle-id { color: rgba(255,255,255,0.95); font-weight: 700; margin-left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 48%; font-size: clamp(14px, 4.5vw, 18px); }
+.puzzle-id {
+  color: rgba(255,255,255,0.95);
+  font-weight: 700;
+  margin-left: 8px;
+  /* Allow the id to wrap so long ids are fully visible */
+  white-space: normal;
+  word-break: break-all;
+  overflow: visible;
+  max-width: none;
+  text-align: center;
+  font-size: clamp(12px, 4vw, 16px);
+  line-height: 1.1;
+}
 .puzzle-id.copied { opacity: 0.8; font-size: 13px; }
 
-/* 当屏幕非常窄时，进一步缩小编号字体以避免截断 */
-@media (max-width: 360px) {
-  .puzzle-id { font-size: 12px; max-width: 56%; }
-}
+/* Make answer not expand to push out the id */
+.game-header .answer { flex: 0 0 auto; margin-left: 8px; }
 
 /* ── 选人界面 ───────────────────────────────────────────────── */
 .player-screen {
