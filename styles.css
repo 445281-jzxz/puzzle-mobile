@@ -99,8 +99,6 @@ body {
   letter-spacing: 0.5px;
   padding: 0 4px 4px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .puzzle-id.copied { opacity: 0.7; }
 
